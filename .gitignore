@@ -1,0 +1,18 @@
+# Dependency directory
+node_modules/
+
+# Build output directory (adjust if your build folder is different)
+dist/
+
+# Environment variable files
+.env
+.env.*
+
+# Vite cache directory (optional)
+.vite/
+
+# OS generated files
+.DS_Store
+
+# Editor folders and files
+.vscode/
