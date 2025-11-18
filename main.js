@@ -19,7 +19,7 @@ function main() {
     
     // Scene
     const scene = new THREE.Scene();
-    scene.background = new THREE.Color(0xAAAAAA);
+    scene.background = new THREE.Color(0x222222);
     
     {
         const color = 0xFFFFFF;
@@ -27,28 +27,25 @@ function main() {
         const light = new THREE.DirectionalLight(color, intensity);
         light.position.set(-1, 2, 4);
         scene.add(light);
+
+        scene.add(new THREE.AmbientLight(0xffffff, 0.4));
     }
 
     // Helpers
-    const createMaterial = () => {
-        const material = new THREE.MeshPhongMaterial({
-            side: THREE.DoubleSide,
-        });
-
-        const hue = Math.random();
-        const saturation = 1;
-        const luminance = .5;
-        material.color.setHSL(hue, saturation, luminance);
-
-        return material;
-    }
-
     const addCubie = (x, y, z, size) => {
         const geometry = new THREE.BoxGeometry(size, size, size);
-        const mesh = new THREE.Mesh(geometry, createMaterial());
-        mesh.position.x = x * size;
-        mesh.position.y = y * size;
-        mesh.position.z = z * size;
+        const materials = [
+            new THREE.MeshPhongMaterial({ color: 'green' }),    // right
+            new THREE.MeshPhongMaterial({ color: 'blue'}),      // left
+            new THREE.MeshPhongMaterial({ color: 'white'}),     // top
+            new THREE.MeshPhongMaterial({ color: 'yellow'}),    // bottom
+            new THREE.MeshPhongMaterial({ color: 'orange'}),    // front
+            new THREE.MeshPhongMaterial({ color: 'red'})        // back
+        ]
+        const mesh = new THREE.Mesh(geometry, materials);
+        mesh.position.x = x * size * 1.1;
+        mesh.position.y = y * size * 1.1;
+        mesh.position.z = z * size * 1.1;
         scene.add(mesh);
     }
 
