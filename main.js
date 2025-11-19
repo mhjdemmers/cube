@@ -111,6 +111,38 @@ function main() {
     return new THREE.Mesh(geometry, materials);
   }
 
+  function clockwise(face) {
+    let newFace = [
+      [face[2][1], face[1][0], face[0][0]],
+      [face[2][1], face[1][1], face[0][1]],
+      [face[2][2], face[1][2], face[0][2]]
+    ]
+    return newFace;
+  }
+
+  function antiClockwise(face) {
+    let newFace = [
+      [face[0][2], face[1][2], face[2][2]],
+      [face[0][1], face[1][1], face[2][1]],
+      [face[0][0], face[1][0], face[2][0]]
+    ]
+    return newFace;
+  }
+
+  function rotationX(stickers) {
+    let [R, L, U, D, F, B] = stickers;
+    
+  let R1 = clockwise(R);
+  let L1 = antiClockwise(L);
+
+    let U1 = F;
+    let F1 = D;
+    let D1 = B.map(r => [...r]).reverse(); // B turned 180
+    let B1 = U.map(r => [...r]).reverse(); // U turned 180
+
+    return [R1, L1, U1, D1, F1, B1];
+  }
+
   // Create 3*3*3 cube
   const stickerArray = [
     [
