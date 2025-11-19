@@ -1,6 +1,139 @@
 import * as THREE from "three";
 import { OrbitControls } from "three/addons/controls/OrbitControls.js";
 
+class Cube {
+  constructor(initialStickers) {
+    this.stickers = structuredClone(initialStickers);
+  }
+
+  static clockwise(face) {
+    return [
+      [face[2][0], face[1][0], face[0][0]],
+      [face[2][1], face[1][1], face[0][1]],
+      [face[2][2], face[1][2], face[0][2]],
+    ];
+  }
+
+  static antiClockwise(face) {
+    return [
+      [face[0][2], face[1][2], face[2][2]],
+      [face[0][1], face[1][1], face[2][1]],
+      [face[0][0], face[1][0], face[2][0]],
+    ];
+  }
+
+  static rotate180(face) {
+    return face.map(r => [...r]).reverse().map(row => row.reverse());
+  }
+
+  rotateX() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const R1 = Cube.clockwise(R);
+    const L1 = Cube.antiClockwise(L);
+
+    const U1 = F;
+    const F1 = D;
+    const D1 = Cube.rotate180(B); 
+    const B1 = Cube.rotate180(U);
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
+}
+
+class CubeRenderer {
+  constructor(scene, size, colorMap) {
+    this.scene = scene;
+    this.size = size;
+    this.colorMap = colorMap;
+
+    this.cubieMeshes = [];
+  }
+
+  stickerToXYZ(face, row, col) {
+    const R = 0, L = 1, U = 2, D = 3, F = 4, B = 5;
+    switch (face) {
+      case R:
+        return { x: 2, y: row, z: col };
+
+      case L:
+        return { x: 0, y: row, z: 2 - col };
+
+      case U:
+        return { x: col, y: 2, z: 2 - row };
+
+      case D:
+        return { x: col, y: 0, z: row };
+
+      case F:
+        return { x: col, y: row, z: 2 };
+
+      case B:
+        return { x: 2 - col, y: row, z: 0 };
+    }
+  }
+
+  stickersToCube(stickerArray) {
+    const cube = Array.from({ length: 3 }, () =>
+      Array.from({ length: 3 }, () =>
+        Array.from({ length: 3 }, () => ({ stickers: {} }))
+      )
+    );
+
+    for (let face = 0; face < 6; face++) {
+      for (let row = 0; row < 3; row++) {
+        for (let col = 0; col < 3; col++) {
+          const { x, y, z } = this.stickerToXYZ(face, row, col);
+
+          cube[x][y][z].stickers[face] = stickerArray[face][row][col];
+        }
+      }
+    }
+    return cube;
+  }
+
+  makeCubieMesh(cubie) {
+    const geometry = new THREE.BoxGeometry(this.size, this.size, this.size);
+
+    const base = new THREE.MeshPhongMaterial({ color: 0x000000 });
+    const materials = Array.from({ length: 6 }, () => base.clone());
+
+    for (const [face, colorName] of Object.entries(cubie.stickers)) {
+      materials[face].color.set(this.colorMap[colorName]);
+    }
+
+    return new THREE.Mesh(geometry, materials);
+  }
+
+  clear() {
+    for (const m of this.cubieMeshes) this.scene.remove(m);
+    this.cubieMeshes = [];
+  }
+
+  render(stickerState) {
+    this.clear();
+
+    const cube = this.stickersToCube(stickerState);
+
+    for (let x = 0; x <= 2; x++) {
+      for (let y = 0; y <= 2; y++) {
+        for (let z = 0; z <= 2; z++) {
+          const cubie = cube[x][y][z];
+          const mesh = this.makeCubieMesh(cubie);
+          mesh.position.set(
+            (x - 1) * this.size * 1.1,
+            (y - 1) * this.size * 1.1,
+            (z - 1) * this.size * 1.1
+          );
+          this.scene.add(mesh);
+          this.cubieMeshes.push(mesh);
+        }
+      }
+    }
+  }
+}
+
+
 function main() {
   const canvas = document.querySelector("#c");
   const renderer = new THREE.WebGLRenderer({ antialias: true, canvas });
@@ -31,57 +164,6 @@ function main() {
     scene.add(new THREE.AmbientLight(0xffffff, 0.4));
   }
 
-  const R = 0; // +X
-  const L = 1; // -X
-  const U = 2; // +Y
-  const D = 3; // -Y
-  const F = 4; // +Z
-  const B = 5; // -Z
-
-  function stickerToXYZ(face, row, col) {
-    switch (face) {
-      case R:
-        return { x: 2, y: row, z: col };
-
-      case L:
-        return { x: 0, y: row, z: 2 - col };
-
-      case U:
-        return { x: col, y: 2, z: 2 - row };
-
-      case D:
-        return { x: col, y: 0, z: row };
-
-      case F:
-        return { x: col, y: row, z: 2 };
-
-      case B:
-        return { x: 2 - col, y: row, z: 0 };
-
-      default:
-        throw new Error("Invalid face index");
-    }
-  }
-
-  function stickersToCube(stickerArray) {
-    const cube = Array.from({ length: 3 }, () =>
-      Array.from({ length: 3 }, () =>
-        Array.from({ length: 3 }, () => ({ stickers: {} }))
-      )
-    );
-
-    for (let face = 0; face < 6; face++) {
-      for (let row = 0; row < 3; row++) {
-        for (let col = 0; col < 3; col++) {
-          const { x, y, z } = stickerToXYZ(face, row, col);
-
-          cube[x][y][z].stickers[face] = stickerArray[face][row][col];
-        }
-      }
-    }
-    return cube;
-  }
-
   const colorMap = {
     green: 0x00ff00,
     blue: 0x0000ff,
@@ -90,58 +172,6 @@ function main() {
     orange: 0xff8800,
     red: 0xff0000,
   };
-
-  const baseMaterials = [
-    new THREE.MeshPhongMaterial({ color: 0x000000 }),
-    new THREE.MeshPhongMaterial({ color: 0x000000 }),
-    new THREE.MeshPhongMaterial({ color: 0x000000 }),
-    new THREE.MeshPhongMaterial({ color: 0x000000 }),
-    new THREE.MeshPhongMaterial({ color: 0x000000 }),
-    new THREE.MeshPhongMaterial({ color: 0x000000 }),
-  ];
-
-  function makeCubieMesh(cubie, size) {
-    const geometry = new THREE.BoxGeometry(size, size, size);
-    const materials = baseMaterials.map((mat) => mat.clone());
-
-    for (const [face, colorName] of Object.entries(cubie.stickers)) {
-      materials[face].color.set(colorMap[colorName]);
-    }
-
-    return new THREE.Mesh(geometry, materials);
-  }
-
-  function clockwise(face) {
-    let newFace = [
-      [face[2][1], face[1][0], face[0][0]],
-      [face[2][1], face[1][1], face[0][1]],
-      [face[2][2], face[1][2], face[0][2]]
-    ]
-    return newFace;
-  }
-
-  function antiClockwise(face) {
-    let newFace = [
-      [face[0][2], face[1][2], face[2][2]],
-      [face[0][1], face[1][1], face[2][1]],
-      [face[0][0], face[1][0], face[2][0]]
-    ]
-    return newFace;
-  }
-
-  function rotationX(stickers) {
-    let [R, L, U, D, F, B] = stickers;
-    
-  let R1 = clockwise(R);
-  let L1 = antiClockwise(L);
-
-    let U1 = F;
-    let F1 = D;
-    let D1 = B.map(r => [...r]).reverse(); // B turned 180
-    let B1 = U.map(r => [...r]).reverse(); // U turned 180
-
-    return [R1, L1, U1, D1, F1, B1];
-  }
 
   // Create 3*3*3 cube
   const stickerArray = [
@@ -177,24 +207,10 @@ function main() {
     ], // back
   ];
 
-  const cube = stickersToCube(stickerArray);
+  const cube = new Cube(stickerArray);
 
-  const size = 10;
-
-  for (let x = 0; x <= 2; x++) {
-    for (let y = 0; y <= 2; y++) {
-      for (let z = 0; z <= 2; z++) {
-        const cubie = cube[x][y][z];
-        const mesh = makeCubieMesh(cubie, size);
-        mesh.position.set(
-          (x - 1) * size * 1.1,
-          (y - 1) * size * 1.1,
-          (z - 1) * size * 1.1
-        );
-        scene.add(mesh);
-      }
-    }
-  }
+  const cubeRenderer = new CubeRenderer(scene, 10, colorMap);
+  cubeRenderer.render(cube.stickers);
 
   function resizeRendererToDisplaySize(renderer) {
     const canvas = renderer.domElement;
@@ -221,6 +237,19 @@ function main() {
     requestAnimationFrame(render);
   }
 
+  const rotateXBtn = document.getElementById("rotateXBtn");
+  rotateXBtn.addEventListener("click", () => {
+    cube.rotateX();
+    cubeRenderer.render(cube.stickers);
+  });
+
+
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "x") {
+      cube.rotateX();
+      cubeRenderer.render(cube.stickers);
+    }
+  });
   requestAnimationFrame(render);
 }
 
