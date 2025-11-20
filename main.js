@@ -33,9 +33,23 @@ class Cube {
     const L1 = Cube.antiClockwise(L);
 
     const U1 = F;
-    const F1 = D;
     const D1 = Cube.rotate180(B); 
+    const F1 = D;
     const B1 = Cube.rotate180(U);
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
+
+  rotateXPrime() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const R1 = Cube.antiClockwise(R);
+    const L1 = Cube.clockwise(L);
+
+    const U1 = B;
+    const D1 = Cube.rotate180(F);
+    const F1 = U;
+    const B1 = Cube.rotate180(D);
 
     this.stickers = [R1, L1, U1, D1, F1, B1];
   }
@@ -243,10 +257,18 @@ function main() {
     cubeRenderer.render(cube.stickers);
   });
 
+  const rotateXPrimeBtn = document.getElementById("rotateXPrimeBtn");
+  rotateXPrimeBtn.addEventListener("click", () => {
+    cube.rotateXPrime();
+    cubeRenderer.render(cube.stickers);
+  });
 
   window.addEventListener("keydown", (e) => {
     if (e.key === "x") {
       cube.rotateX();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key === "X") {
+      cube.rotateXPrime();
       cubeRenderer.render(cube.stickers);
     }
   });
