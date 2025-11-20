@@ -81,6 +81,34 @@ class Cube {
 
     this.stickers = [R1, L1, U1, D1, F1, B1];
   }
+
+  rotateZ() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const F1 = Cube.clockwise(F);
+    const B1 = Cube.antiClockwise(B);
+
+    const R1 = Cube.clockwise(U);
+    const L1 = Cube.clockwise(D);
+    const U1 = Cube.clockwise(L);
+    const D1 = Cube.clockwise(R);
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
+  
+  rotateZPrime() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const F1 = Cube.antiClockwise(F);
+    const B1 = Cube.clockwise(B);
+
+    const R1 = Cube.antiClockwise(D);
+    const L1 = Cube.antiClockwise(U);
+    const U1 = Cube.antiClockwise(R);
+    const D1 = Cube.antiClockwise(L);
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
 }
 
 class CubeRenderer {
@@ -218,6 +246,7 @@ function main() {
   };
 
   // Create 3*3*3 cube
+
   //   const stickerArray = [
   //   [
   //     ["green", "green", "green"],
@@ -404,6 +433,18 @@ function main() {
     cube.rotateYPrime();
     cubeRenderer.render(cube.stickers);
   });
+  
+  const rotateZBtn = document.getElementById("rotateZBtn");
+  rotateZBtn.addEventListener("click", () => {
+    cube.rotateZ();
+    cubeRenderer.render(cube.stickers);
+  });
+
+  const rotateZPrimeBtn = document.getElementById("rotateZPrimeBtn");
+  rotateZPrimeBtn.addEventListener("click", () => {
+    cube.rotateZPrime();
+    cubeRenderer.render(cube.stickers);
+  });
 
 
   window.addEventListener("keydown", (e) => {
@@ -418,6 +459,12 @@ function main() {
       cubeRenderer.render(cube.stickers);
     } else if (e.key ==="Y") {
       cube.rotateYPrime();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="z") {
+      cube.rotateZ();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="Z") {
+      cube.rotateZPrime();
       cubeRenderer.render(cube.stickers);
     }
   });
