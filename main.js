@@ -46,10 +46,38 @@ class Cube {
     const R1 = Cube.antiClockwise(R);
     const L1 = Cube.clockwise(L);
 
-    const U1 = B;
-    const D1 = Cube.rotate180(F);
+    const U1 = Cube.rotate180(B);
+    const D1 = F;
     const F1 = U;
     const B1 = Cube.rotate180(D);
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
+
+  rotateY() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const U1 = Cube.clockwise(U);
+    const D1 = Cube.antiClockwise(D);
+
+    const R1 = B;
+    const L1 = F;
+    const F1 = R;
+    const B1 = L;
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
+
+  rotateYPrime() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const U1 = Cube.antiClockwise(U);
+    const D1 = Cube.clockwise(D);
+
+    const R1 = F;
+    const L1 = B;
+    const F1 = L;
+    const B1 = R;
 
     this.stickers = [R1, L1, U1, D1, F1, B1];
   }
@@ -66,24 +94,26 @@ class CubeRenderer {
 
   stickerToXYZ(face, row, col) {
     const R = 0, L = 1, U = 2, D = 3, F = 4, B = 5;
+    const rowFromBottom = 2 - row;
+    
     switch (face) {
       case R:
-        return { x: 2, y: row, z: col };
+        return { x: 2, y: rowFromBottom, z: 2 - col };
 
       case L:
-        return { x: 0, y: row, z: 2 - col };
+        return { x: 0, y: rowFromBottom, z: col };
 
       case U:
-        return { x: col, y: 2, z: 2 - row };
+        return { x: col, y: 2, z: 2 - rowFromBottom };
 
       case D:
-        return { x: col, y: 0, z: row };
+        return { x: col, y: 0, z: rowFromBottom };
 
       case F:
-        return { x: col, y: row, z: 2 };
+        return { x: col, y: rowFromBottom, z: 2 };
 
       case B:
-        return { x: 2 - col, y: row, z: 0 };
+        return { x: 2 - col, y: rowFromBottom, z: 0 };
     }
   }
 
@@ -188,6 +218,39 @@ function main() {
   };
 
   // Create 3*3*3 cube
+  //   const stickerArray = [
+  //   [
+  //     ["green", "green", "green"],
+  //     ["green", "green", "green"],
+  //     ["green", "green", "green"],
+  //   ], // right
+  //   [
+  //     ["blue", "blue", "blue"],
+  //     ["blue", "blue", "blue"],
+  //     ["blue", "blue", "blue"],
+  //   ], // left
+  //   [
+  //     ["white", "white", "white"],
+  //     ["white", "white", "white"],
+  //     ["white", "white", "white"],
+  //   ], // up
+  //   [
+  //     ["yellow", "yellow", "yellow"],
+  //     ["yellow", "yellow", "yellow"],
+  //     ["yellow", "yellow", "yellow"],
+  //   ], // down
+  //   [
+  //     ["orange", "orange", "orange"],
+  //     ["orange", "orange", "orange"],
+  //     ["orange", "orange", "orange"],
+  //   ], // front
+  //   [
+  //     ["red", "red", "red"],
+  //     ["red", "red", "red"],
+  //     ["red", "red", "red"],
+  //   ], // back
+  // ];
+
   const stickerArray = [
     [
       ["green", "green", "green"],
@@ -200,26 +263,93 @@ function main() {
       ["blue", "blue", "blue"],
     ], // left
     [
-      ["white", "white", "white"],
-      ["white", "white", "white"],
-      ["white", "white", "white"],
+      ["white", "white", "red"],
+      ["white", "white", "red"],
+      ["white", "white", "red"],
     ], // up
     [
-      ["yellow", "yellow", "yellow"],
-      ["yellow", "yellow", "yellow"],
-      ["yellow", "yellow", "yellow"],
+      ["yellow", "yellow", "orange"],
+      ["yellow", "yellow", "orange"],
+      ["yellow", "yellow", "orange"],
     ], // down
     [
-      ["orange", "orange", "orange"],
-      ["orange", "orange", "orange"],
-      ["orange", "orange", "orange"],
+      ["orange", "orange", "white"],
+      ["orange", "orange", "white"],
+      ["orange", "orange", "white"],
     ], // front
     [
-      ["red", "red", "red"],
-      ["red", "red", "red"],
-      ["red", "red", "red"],
+      ["yellow", "red", "red"],
+      ["yellow", "red", "red"],
+      ["yellow", "red", "red"],
     ], // back
   ];
+
+  //   const stickerArray = [
+  //   [
+  //     ["red", "red", "red"],
+  //     ["green", "green", "green"],
+  //     ["green", "green", "green"],
+  //   ], // right
+  //   [
+  //     ["orange", "orange", "orange"],
+  //     ["blue", "blue", "blue"],
+  //     ["blue", "blue", "blue"],
+  //   ], // left
+  //   [
+  //     ["white", "white", "white"],
+  //     ["white", "white", "white"],
+  //     ["white", "white", "white"],
+  //   ], // up
+  //   [
+  //     ["yellow", "yellow", "yellow"],
+  //     ["yellow", "yellow", "yellow"],
+  //     ["yellow", "yellow", "yellow"],
+  //   ], // down
+  //   [
+  //     ["green", "green", "green"],
+  //     ["orange", "orange", "orange"],
+  //     ["orange", "orange", "orange"],
+  //   ], // front
+  //   [
+  //     ["blue", "blue", "blue"],
+  //     ["red", "red", "red"],
+  //     ["red", "red", "red"],
+  //   ], // back
+  // ];
+
+  //   const stickerArray = [
+  //   [
+  //     ["white", "green", "green"],
+  //     ["white", "green", "green"],
+  //     ["white", "green", "green"],
+  //   ], // right
+  //   [
+  //     ["blue", "blue", "yellow"],
+  //     ["blue", "blue", "yellow"],
+  //     ["blue", "blue", "yellow"],
+  //   ], // left
+  //   [
+  //     ["white", "white", "white"],
+  //     ["white", "white", "white"],
+  //     ["blue", "blue", "blue"],
+  //   ], // up
+  //   [
+  //     ["green", "green", "green"],
+  //     ["yellow", "yellow", "yellow"],
+  //     ["yellow", "yellow", "yellow"],
+  //   ], // down
+  //   [
+  //     ["orange", "orange", "orange"],
+  //     ["orange", "orange", "orange"],
+  //     ["orange", "orange", "orange"],
+  //   ], // front
+  //   [
+  //     ["red", "red", "red"],
+  //     ["red", "red", "red"],
+  //     ["red", "red", "red"],
+  //   ], // back
+  // ];
+
 
   const cube = new Cube(stickerArray);
 
@@ -263,12 +393,31 @@ function main() {
     cubeRenderer.render(cube.stickers);
   });
 
+  const rotateYBtn = document.getElementById("rotateYBtn");
+  rotateYBtn.addEventListener("click", () => {
+    cube.rotateY();
+    cubeRenderer.render(cube.stickers);
+  });
+
+  const rotateYPrimeBtn = document.getElementById("rotateYPrimeBtn");
+  rotateYPrimeBtn.addEventListener("click", () => {
+    cube.rotateYPrime();
+    cubeRenderer.render(cube.stickers);
+  });
+
+
   window.addEventListener("keydown", (e) => {
     if (e.key === "x") {
       cube.rotateX();
       cubeRenderer.render(cube.stickers);
     } else if (e.key === "X") {
       cube.rotateXPrime();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="y") {
+      cube.rotateY();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="Y") {
+      cube.rotateYPrime();
       cubeRenderer.render(cube.stickers);
     }
   });
