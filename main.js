@@ -109,6 +109,19 @@ class Cube {
 
     this.stickers = [R1, L1, U1, D1, F1, B1];
   }
+
+  rotateR() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const R1 = Cube.clockwise(R);
+    const L1 = L;
+    const U1 = U.map((row, i) => [row[0], row[1], F[i][2]]);
+    const D1 = D.map((row, i) => [row[0], row[1], B[2 - i][0]]);
+    const F1 = F.map((row, i) => [row[0], row[1], D[i][2]]);
+    const B1 = B.map((row, i) => [U[2 - i][2], row[1], row[2]]);
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
 }
 
 class CubeRenderer {
@@ -446,6 +459,12 @@ function main() {
     cubeRenderer.render(cube.stickers);
   });
 
+  const rotateRBtn = document.getElementById("rotateRBtn");
+  rotateRBtn.addEventListener("click", () => {
+    cube.rotateR();
+    cubeRenderer.render(cube.stickers);
+  });
+
 
   window.addEventListener("keydown", (e) => {
     if (e.key === "x") {
@@ -465,6 +484,9 @@ function main() {
       cubeRenderer.render(cube.stickers);
     } else if (e.key ==="Z") {
       cube.rotateZPrime();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="r") {
+      cube.rotateR();
       cubeRenderer.render(cube.stickers);
     }
   });
