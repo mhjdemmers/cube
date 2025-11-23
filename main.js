@@ -160,6 +160,34 @@ class Cube {
     const B1 = B.map((row, i) => [row[0], row[1], U[2 - i][0]]);
 
     this.stickers = [R1, L1, U1, D1, F1, B1];
+  } 
+  
+  rotateU() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const U1 = Cube.clockwise(U);
+    const D1 = D;
+
+    const R1 = [ [...B[0]], ...R.slice(1).map(row => [...row]) ];
+    const L1 = [ [...F[0]], ...L.slice(1).map(row => [...row]) ];
+    const F1 = [ [...R[0]], ...F.slice(1).map(row => [...row]) ];
+    const B1 = [ [...L[0]], ...B.slice(1).map(row => [...row]) ];
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
+  
+  rotateUPrime() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const U1 = Cube.antiClockwise(U);
+    const D1 = D;
+
+    const R1 = [ [...F[0]], ...R.slice(1).map(row => [...row]) ];
+    const L1 = [ [...B[0]], ...L.slice(1).map(row => [...row]) ];
+    const F1 = [ [...L[0]], ...F.slice(1).map(row => [...row]) ];
+    const B1 = [ [...R[0]], ...B.slice(1).map(row => [...row]) ];
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
   }
 }
 
@@ -552,6 +580,12 @@ function main() {
       cubeRenderer.render(cube.stickers);
     } else if (e.key ==="L") {
       cube.rotateLPrime();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="u") {
+      cube.rotateU();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="U") {
+      cube.rotateUPrime();
       cubeRenderer.render(cube.stickers);
     }
   });
