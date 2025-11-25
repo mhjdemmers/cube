@@ -188,6 +188,21 @@ class Cube {
     const B1 = [ [...R[0]], ...B.slice(1).map(row => [...row]) ];
 
     this.stickers = [R1, L1, U1, D1, F1, B1];
+  } 
+  
+  rotateD() {
+    let [R, L, U, D, F, B] = this.stickers;
+    // console.log(this.stickers);
+
+    const U1 = U;
+    const D1 = Cube.clockwise(D);
+
+    const R1 = [...R.slice(0, 2).map(row => [...row]),  [...F[2]]];
+    const L1 = [ ...L.slice(0, 2).map(row => [...row]), [...B[2]] ];
+    const F1 = [ ...F.slice(0, 2).map(row => [...row]), [...L[2]] ];
+    const B1 = [ ...B.slice(0, 2).map(row => [...row]), [...R[2]] ];
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
   }
 }
 
@@ -549,6 +564,30 @@ function main() {
     cube.rotateLPrime();
     cubeRenderer.render(cube.stickers);
   });
+  
+  const rotateUBtn = document.getElementById("rotateUBtn");
+  rotateUBtn.addEventListener("click", () => {
+    cube.rotateU();
+    cubeRenderer.render(cube.stickers);
+  });
+  
+  const rotateUPrimeBtn = document.getElementById("rotateUPrimeBtn");
+  rotateUPrimeBtn.addEventListener("click", () => {
+    cube.rotateUPrime();
+    cubeRenderer.render(cube.stickers);
+  });
+  
+  const rotateDBtn = document.getElementById("rotateDBtn");
+  rotateDBtn.addEventListener("click", () => {
+    cube.rotateD();
+    cubeRenderer.render(cube.stickers);
+  });
+  
+  const rotateDPrimeBtn = document.getElementById("rotateDPrimeBtn");
+  rotateDPrimeBtn.addEventListener("click", () => {
+    cube.rotateDPrime();
+    cubeRenderer.render(cube.stickers);
+  });
 
   window.addEventListener("keydown", (e) => {
     if (e.key === "x") {
@@ -586,6 +625,9 @@ function main() {
       cubeRenderer.render(cube.stickers);
     } else if (e.key ==="U") {
       cube.rotateUPrime();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="d") {
+      cube.rotateD();
       cubeRenderer.render(cube.stickers);
     }
   });
