@@ -4,6 +4,19 @@
     <meta charset="utf-8" />
     <title>Cube</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- SEO / Google -->
+    <meta name="author" content="Mareno Demmers">
+    <meta name="description" content="Cube">
+
+    <!-- Social: Twitter -->
+    <meta name="twitter:card" content="/images/cube_2by1.png">
+    <meta name="twitter:title" content="Cube">
+    <meta name="twitter:description" content="Cube">
+    <meta name="twitter:image" content="/images/cube_1by1.png">
+
+    <!-- for a total list of meta tags, check the original gist: https://gist.github.com/slaveofcode/17b072d87a76ca6f6888b1b4975eae88 -->
+
+    <!-- twitter:image:src and twitter:image will both work but twitter:image is the canonical current one (src: https://twittercommunity.com/t/twitter-image-src-or-twitter-image/16085/7) -->
   </head>
   <body>
     <div class="rotateBtns">
@@ -21,6 +34,10 @@
       <button class="rotateBtn" id="rotateUPrimeBtn">U'</button>
       <button class="rotateBtn" id="rotateDBtn">D</button>
       <button class="rotateBtn" id="rotateDPrimeBtn">D'</button>
+      <button class="rotateBtn" id="rotateFBtn">F</button>
+      <button class="rotateBtn" id="rotateFPrimeBtn">F'</button>
+      <button class="rotateBtn" id="rotateBBtn">B</button>
+      <button class="rotateBtn" id="rotateBPrimeBtn">B'</button>
     </div>
     <canvas id="c"></canvas>
     <script type="module" src="/main.js"></script>

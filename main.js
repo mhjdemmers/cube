@@ -204,6 +204,77 @@ class Cube {
 
     this.stickers = [R1, L1, U1, D1, F1, B1];
   }
+  
+  rotateDPrime() {
+    let [R, L, U, D, F, B] = this.stickers;
+    // console.log(this.stickers);
+
+    const U1 = U;
+    const D1 = Cube.antiClockwise(D);
+
+    const R1 = [...R.slice(0, 2).map(row => [...row]),  [...B[2]]];
+    const L1 = [ ...L.slice(0, 2).map(row => [...row]), [...F[2]] ];
+    const F1 = [ ...F.slice(0, 2).map(row => [...row]), [...R[2]] ];
+    const B1 = [ ...B.slice(0, 2).map(row => [...row]), [...L[2]] ];
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
+  
+  rotateF() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const F1 = Cube.clockwise(F)
+    const B1 = B
+
+    const R1 = R.map((row, i) => [U[2][i], row[1], row[2]]);
+    const L1 = L.map((row, i) => [row[0], row[1], D[0][i]]);
+    const U1 = [ ...U.slice(0, 2).map(row => [...row]), [L[2][2], L[1][2], L[0][2]]];
+    const D1 = [ [R[2][0], R[1][0], R[0][0]], ...D.slice(1).map(row => [...row])];
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  } 
+  
+  rotateFPrime() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const F1 = Cube.antiClockwise(F)
+    const B1 = B
+
+    const R1 = R.map((row, i) => [D[0][2 - i], row[1], row[2]]);
+    const L1 = L.map((row, i) => [row[0], row[1], U[2][2 - i]]);
+    const U1 = [ ...U.slice(0, 2).map(row => [...row]), [R[0][0], R[1][0], R[2][0]]];
+    const D1 = [ [L[0][2], L[1][2], L[2][2]], ...D.slice(1).map(row => [...row])];
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  } 
+
+  rotateB() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const F1 = F
+    const B1 = Cube.clockwise(B)
+
+    const R1 = R.map((row, i) => [row[0], row[1], D[2][2 - i]]);
+    const L1 = L.map((row, i) => [U[0][2 - i], row[1], row[2]]);
+    const U1 = [ [R[0][2], R[1][2], R[2][2]], ...U.slice(1).map(row => [...row] ) ];
+    const D1 = [ ...D.slice(0, 2).map(row => [...row]), [L[0][0], L[1][0], L[2][0]]];
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  } 
+  
+  rotateBPrime() {
+    let [R, L, U, D, F, B] = this.stickers;
+
+    const F1 = F;
+    const B1 = Cube.antiClockwise(B);
+
+    const R1 = R.map((row, i) => [row[0], row[1], U[0][i]]);
+    const L1 = L.map((row, i) => [D[2][i], row[1], row[2]]);
+    const U1 = [ [L[2][0], L[1][0], L[0][0]], ...U.slice(1).map(row => [...row]) ];
+    const D1 = [ ...D.slice(0, 2).map(row => [...row]), [R[2][2], R[1][2], R[0][2]] ];
+
+    this.stickers = [R1, L1, U1, D1, F1, B1];
+  }
 }
 
 class CubeRenderer {
@@ -342,38 +413,38 @@ function main() {
 
   // Create 3*3*3 cube
 
-  //   const stickerArray = [
-  //   [
-  //     ["green", "green", "green"],
-  //     ["green", "green", "green"],
-  //     ["green", "green", "green"],
-  //   ], // right
-  //   [
-  //     ["blue", "blue", "blue"],
-  //     ["blue", "blue", "blue"],
-  //     ["blue", "blue", "blue"],
-  //   ], // left
-  //   [
-  //     ["white", "white", "white"],
-  //     ["white", "white", "white"],
-  //     ["white", "white", "white"],
-  //   ], // up
-  //   [
-  //     ["yellow", "yellow", "yellow"],
-  //     ["yellow", "yellow", "yellow"],
-  //     ["yellow", "yellow", "yellow"],
-  //   ], // down
-  //   [
-  //     ["orange", "orange", "orange"],
-  //     ["orange", "orange", "orange"],
-  //     ["orange", "orange", "orange"],
-  //   ], // front
-  //   [
-  //     ["red", "red", "red"],
-  //     ["red", "red", "red"],
-  //     ["red", "red", "red"],
-  //   ], // back
-  // ];
+    const stickerArray = [
+    [
+      ["green", "green", "green"],
+      ["green", "green", "green"],
+      ["green", "green", "green"],
+    ], // right
+    [
+      ["blue", "blue", "blue"],
+      ["blue", "blue", "blue"],
+      ["blue", "blue", "blue"],
+    ], // left
+    [
+      ["white", "white", "white"],
+      ["white", "white", "white"],
+      ["white", "white", "white"],
+    ], // up
+    [
+      ["yellow", "yellow", "yellow"],
+      ["yellow", "yellow", "yellow"],
+      ["yellow", "yellow", "yellow"],
+    ], // down
+    [
+      ["orange", "orange", "orange"],
+      ["orange", "orange", "orange"],
+      ["orange", "orange", "orange"],
+    ], // front
+    [
+      ["red", "red", "red"],
+      ["red", "red", "red"],
+      ["red", "red", "red"],
+    ], // back
+  ];
 
   // const stickerArray = [
   //   [
@@ -441,38 +512,38 @@ function main() {
   //   ], // back
   // ];
 
-    const stickerArray = [
-    [
-      ["white", "green", "green"],
-      ["white", "green", "green"],
-      ["white", "green", "green"],
-    ], // right
-    [
-      ["blue", "blue", "yellow"],
-      ["blue", "blue", "yellow"],
-      ["blue", "blue", "yellow"],
-    ], // left
-    [
-      ["white", "white", "white"],
-      ["white", "white", "white"],
-      ["blue", "blue", "blue"],
-    ], // up
-    [
-      ["green", "green", "green"],
-      ["yellow", "yellow", "yellow"],
-      ["yellow", "yellow", "yellow"],
-    ], // down
-    [
-      ["orange", "orange", "orange"],
-      ["orange", "orange", "orange"],
-      ["orange", "orange", "orange"],
-    ], // front
-    [
-      ["red", "red", "red"],
-      ["red", "red", "red"],
-      ["red", "red", "red"],
-    ], // back
-  ];
+  //   const stickerArray = [
+  //   [
+  //     ["white", "green", "green"],
+  //     ["white", "green", "green"],
+  //     ["white", "green", "green"],
+  //   ], // right
+  //   [
+  //     ["blue", "blue", "yellow"],
+  //     ["blue", "blue", "yellow"],
+  //     ["blue", "blue", "yellow"],
+  //   ], // left
+  //   [
+  //     ["white", "white", "white"],
+  //     ["white", "white", "white"],
+  //     ["blue", "blue", "blue"],
+  //   ], // up
+  //   [
+  //     ["green", "green", "green"],
+  //     ["yellow", "yellow", "yellow"],
+  //     ["yellow", "yellow", "yellow"],
+  //   ], // down
+  //   [
+  //     ["orange", "orange", "orange"],
+  //     ["orange", "orange", "orange"],
+  //     ["orange", "orange", "orange"],
+  //   ], // front
+  //   [
+  //     ["red", "red", "red"],
+  //     ["red", "red", "red"],
+  //     ["red", "red", "red"],
+  //   ], // back
+  // ];
 
 
   const cube = new Cube(stickerArray);
@@ -589,6 +660,30 @@ function main() {
     cubeRenderer.render(cube.stickers);
   });
 
+  const rotateFBtn = document.getElementById("rotateFBtn");
+  rotateFBtn.addEventListener("click", () => {
+    cube.rotateF();
+    cubeRenderer.render(cube.stickers);
+  });
+  
+  const rotateFPrimeBtn = document.getElementById("rotateFPrimeBtn");
+  rotateFPrimeBtn.addEventListener("click", () => {
+    cube.rotateFPrime();
+    cubeRenderer.render(cube.stickers);
+  });
+
+  const rotateBBtn = document.getElementById("rotateBBtn");
+  rotateBBtn.addEventListener("click", () => {
+    cube.rotateB();
+    cubeRenderer.render(cube.stickers);
+  });
+  
+  const rotateBPrimeBtn = document.getElementById("rotateBPrimeBtn");
+  rotateBPrimeBtn.addEventListener("click", () => {
+    cube.rotateBPrime();
+    cubeRenderer.render(cube.stickers);
+  });
+
   window.addEventListener("keydown", (e) => {
     if (e.key === "x") {
       cube.rotateX();
@@ -628,6 +723,21 @@ function main() {
       cubeRenderer.render(cube.stickers);
     } else if (e.key ==="d") {
       cube.rotateD();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="D") {
+      cube.rotateDPrime();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="f") {
+      cube.rotateF();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="F") {
+      cube.rotateFPrime();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="b") {
+      cube.rotateB();
+      cubeRenderer.render(cube.stickers);
+    } else if (e.key ==="B") {
+      cube.rotateBPrime();
       cubeRenderer.render(cube.stickers);
     }
   });
